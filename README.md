@@ -1,6 +1,6 @@
 # Angular performance: before / after
 
-The same 10,000-row orders table, built twice in Angular 22 (standalone, Signals, CDK).
+The same 10,000-row orders table (11 columns), built twice in Angular 22 (standalone, Signals, CDK).
 One page is deliberately slow, the other is fixed. A live metrics bar shows FPS, DOM nodes and time from action to paint.
 
 ## Measured results
@@ -9,10 +9,10 @@ Headless Chromium, 10,000 rows, same machine, same data. Treat the numbers as in
 
 | Metric | Slow (before) | Optimized (after) |
 |---|---|---|
-| DOM elements in the table | 70,000 | 121 |
-| First keystroke in search to paint | 1,658 ms | 6 ms |
-| Typing "olena", slowest key | 1,658 ms | 29 ms |
-| Sort a column to paint | 2,226 ms | 69 ms |
+| DOM elements in the table | 130,000 | 223 |
+| Scrolling (frames per second) | 1 FPS | 60 FPS |
+| First keystroke in search to paint | 1,425 ms | 9 ms |
+| Sort a column to paint | 2,649 ms | 68 ms |
 
 ## What was wrong and how it was fixed
 
@@ -20,8 +20,9 @@ Headless Chromium, 10,000 rows, same machine, same data. Treat the numbers as in
 |---|---|
 | All 10,000 rows rendered into the DOM | CDK Virtual Scroll, only visible rows exist |
 | Filter and sort inside a getter, re-run on every change detection and several times per pass | `computed()` signal, calculated once per input change and cached |
-| `Intl.NumberFormat` and date formatting created per row in the template | Formatters created once, values pre-formatted |
 | Filter runs on every keystroke | 200 ms debounce on search |
+| `(scroll)` handler updates a field, so every scroll event runs a full change detection pass, including the filter, sort and the summary total | Scroll position is a signal fed by `scrolledIndexChange`, total is a `computed()` |
+| Per-cell formatting functions create `Intl.NumberFormat` objects on every pass | Formatters created once, values pre-formatted |
 | `track $index`, DOM rebuilt on every change | Stable `trackBy` identity |
 | Plain fields and default change detection | Signals and `OnPush` |
 
