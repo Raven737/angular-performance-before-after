@@ -1,0 +1,27 @@
+<div class="toolbar">
+  <input type="search" placeholder="Search customer or ID" (input)="onSearch($any($event.target).value)" />
+  <select (change)="onStatus($any($event.target).value)">
+    <option value="">All statuses</option>
+    @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+  </select>
+  <span class="count">{{ rows().length }} of {{ total }} rows</span>
+</div>
+<app-metrics-bar />
+<div class="table">
+  <div class="row head">
+    <button (click)="sortBy('id')">ID</button>
+    <button (click)="sortBy('customer')">Customer</button>
+    <button (click)="sortBy('amount')">Amount</button>
+    <span>Status</span>
+    <button (click)="sortBy('date')">Date</button>
+  </div>
+  <cdk-virtual-scroll-viewport class="table-body scroll" [itemSize]="rowHeight">
+    <div *cdkVirtualFor="let o of rows(); trackBy: trackById" class="row">
+      <span>{{ o.id }}</span>
+      <span>{{ o.customer }}</span>
+      <span>{{ o.amountText }}</span>
+      <span><i class="badge {{ o.status }}">{{ o.status }}</i></span>
+      <span>{{ o.dateText }}</span>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</div>
