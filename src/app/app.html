@@ -1,0 +1,11 @@
+<header class="top">
+  <div>
+    <h1>Angular performance: before / after</h1>
+    <p>The same 10,000-row table, built twice. Type in search, sort a column, scroll, and watch the numbers.</p>
+  </div>
+  <nav>
+    <a routerLink="/slow" routerLinkActive="active" class="slow">Slow (before)</a>
+    <a routerLink="/optimized" routerLinkActive="active" class="fast">Optimized (after)</a>
+  </nav>
+</header>
+<main><router-outlet /></main>
