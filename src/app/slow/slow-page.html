@@ -1,0 +1,29 @@
+<div class="toolbar">
+  <input type="search" placeholder="Search customer or ID" [(ngModel)]="query" (ngModelChange)="onInput()" />
+  <select [(ngModel)]="status" (ngModelChange)="onInput()">
+    <option value="">All statuses</option>
+    @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
+  </select>
+  <span class="count">{{ rows.length }} of {{ all.length }} rows</span>
+</div>
+<app-metrics-bar />
+<div class="table">
+  <div class="row head">
+    <button (click)="sortBy('id')">ID</button>
+    <button (click)="sortBy('customer')">Customer</button>
+    <button (click)="sortBy('amount')">Amount</button>
+    <span>Status</span>
+    <button (click)="sortBy('date')">Date</button>
+  </div>
+  <div class="table-body scroll">
+    @for (o of rows; track $index) {
+      <div class="row">
+        <span>{{ o.id }}</span>
+        <span>{{ o.customer }}</span>
+        <span>{{ fmtAmount(o) }}</span>
+        <span><i class="badge {{ o.status }}">{{ o.status }}</i></span>
+        <span>{{ fmtDate(o) }}</span>
+      </div>
+    }
+  </div>
+</div>
