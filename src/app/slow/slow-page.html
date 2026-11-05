@@ -1,29 +1,43 @@
 <div class="toolbar">
-  <input type="search" placeholder="Search customer or ID" [(ngModel)]="query" (ngModelChange)="onInput()" />
+  <input type="search" placeholder="Search name, email or ID" [(ngModel)]="query" (ngModelChange)="onInput()" />
   <select [(ngModel)]="status" (ngModelChange)="onInput()">
     <option value="">All statuses</option>
     @for (s of statuses; track s) { <option [value]="s">{{ s }}</option> }
   </select>
-  <span class="count">{{ rows.length }} of {{ all.length }} rows</span>
+  <span class="count">Row {{ firstVisibleRow }} of {{ rows.length }} · total {{ money(totalSum) }}</span>
 </div>
 <app-metrics-bar />
-<div class="table">
-  <div class="row head">
-    <button (click)="sortBy('id')">ID</button>
-    <button (click)="sortBy('customer')">Customer</button>
-    <button (click)="sortBy('amount')">Amount</button>
-    <span>Status</span>
-    <button (click)="sortBy('date')">Date</button>
-  </div>
-  <div class="table-body scroll">
-    @for (o of rows; track $index) {
-      <div class="row">
-        <span>{{ o.id }}</span>
-        <span>{{ o.customer }}</span>
-        <span>{{ fmtAmount(o) }}</span>
-        <span><i class="badge {{ o.status }}">{{ o.status }}</i></span>
-        <span>{{ fmtDate(o) }}</span>
-      </div>
-    }
+<div class="table-wrap">
+  <div class="table">
+    <div class="row head">
+      <button (click)="sortBy('id')">ID</button>
+      <button (click)="sortBy('customer')">Customer</button>
+      <span>Email</span>
+      <button (click)="sortBy('city')">City</button>
+      <button (click)="sortBy('product')">Product</button>
+      <button (click)="sortBy('qty')">Qty</button>
+      <span>Unit price</span>
+      <button (click)="sortBy('discount')">Discount</button>
+      <button (click)="sortBy('amount')">Total</button>
+      <span>Status</span>
+      <button (click)="sortBy('date')">Date</button>
+    </div>
+    <div class="table-body scroll" (scroll)="onScroll($event)">
+      @for (o of rows; track $index) {
+        <div class="row">
+          <span>{{ o.id }}</span>
+          <span>{{ o.customer }}</span>
+          <span>{{ o.email }}</span>
+          <span>{{ o.city }}</span>
+          <span>{{ o.product }}</span>
+          <span>{{ o.qty }}</span>
+          <span>{{ unitPrice(o) }}</span>
+          <span>{{ percent(o) }}</span>
+          <span>{{ money(o.amount) }}</span>
+          <span><i class="badge {{ o.status }}">{{ o.status }}</i></span>
+          <span>{{ fmtDate(o) }}</span>
+        </div>
+      }
+    </div>
   </div>
 </div>
